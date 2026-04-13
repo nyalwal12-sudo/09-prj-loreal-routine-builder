@@ -74,11 +74,58 @@ body {
 .chat-window {
   padding: 20px;
   font-size: 18px;
-  line-height: 1.5;
+  line-height: 1.6;
   height: 250px;
   overflow-y: auto;
-  background: #fafafa;
+  background: #f7f4ef;
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chat-message {
+  max-width: 100%;
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+  line-height: 1.7;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  background: #111;
+  color: #fff;
+  text-align: right;
+}
+
+.chat-message.assistant {
+  align-self: flex-start;
+  background: #fff;
+  color: #222;
+  border: 1px solid #e4dfd6;
+}
+
+.chat-message.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.chat-message.ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+.chat-message-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  opacity: 0.75;
+}
+
+.chat-message-text {
+  white-space: pre-wrap;
 }
 
 /* placeholder message */
@@ -104,6 +151,7 @@ body {
   border: none;
   border-bottom: 2px solid #ccc;
   background: transparent;
+  direction: auto;
 }
 
 .chat-form input:focus {
@@ -186,12 +234,50 @@ body {
   display: flex;
   gap: 15px;
   min-height: 160px;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+}
+
+.product-card.selected {
+  border-color: #000;
+  background-color: #f9f4e8;
 }
 
 .product-card img {
   width: 110px;
   height: 110px;
   object-fit: contain;
+}
+
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product-description {
+  margin-top: 10px;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.4;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease, max-height 0.2s ease;
+}
+
+.product-card:hover .product-description {
+  opacity: 1;
+  max-height: 120px;
+}
   flex-shrink: 0;
 }
 
