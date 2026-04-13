@@ -70,7 +70,7 @@ function createSystemMessage(selectedProducts) {
     return {
       role: "system",
       content:
-        "You are a professional beauty routine advisor for L'Oréal. Provide polished, helpful answers in a respectful tone. Use clear, structured guidance with short paragraphs or bullets when useful. Refer back to the full conversation history and preserve earlier questions and answers to keep the dialogue coherent. Do not sacrifice completeness for brevity — give the user a full, complete response even if it is longer.",
+        "You are a professional beauty routine advisor for L'Oréal. Provide helpful, respectful guidance in complete short answers. Do not use '*' or '#' in any response. Use plain text with short sentences and line breaks, and avoid markdown formatting. Refer back to earlier messages so the conversation stays coherent.",
     };
   }
 
@@ -83,7 +83,7 @@ function createSystemMessage(selectedProducts) {
 
   return {
     role: "system",
-    content: `You are a professional beauty routine advisor for L'Oréal. Use the selected products below to answer questions and build routines. Provide elegant, beginner-friendly advice with concise steps and thoughtful recommendations. Keep follow-up questions relevant to earlier messages. Do not cut answers short; provide complete guidance and keep the explanation whole.\n\nSelected products:\n${productList}`,
+    content: `You are a professional beauty routine advisor for L'Oréal. Use the selected products below to answer questions and build routines. Keep your responses short, complete, and easy to read without markdown characters. Do not use '*' or '#' in any response. Use plain text and line breaks only.\n\nSelected products:\n${productList}`,
   };
 }
 
@@ -214,21 +214,29 @@ function updateChatWindow() {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
+function sanitizeAssistantText(text) {
+  return text.replace(/[*#]/g, "").replace(/\r/g, "").trim();
+}
+
 function addChatMessage(role, content) {
-  conversationMessages.push({ role, content });
+  const finalContent =
+    role === "assistant" ? sanitizeAssistantText(content) : content;
+  conversationMessages.push({ role, content: finalContent });
   updateChatWindow();
 }
 
 function replaceLastAssistantMessage(content) {
+  const sanitized = sanitizeAssistantText(content);
+
   for (let i = conversationMessages.length - 1; i >= 0; i--) {
     if (conversationMessages[i].role === "assistant") {
-      conversationMessages[i].content = content;
+      conversationMessages[i].content = sanitized;
       updateChatWindow();
       return;
     }
   }
 
-  addChatMessage("assistant", content);
+  addChatMessage("assistant", sanitized);
 }
 
 function getSelectedProducts() {
@@ -268,7 +276,7 @@ async function handleGenerateRoutine() {
   }
 
   const userPrompt =
-    "Generate a personalized routine using the selected products.";
+    "Generate a short, complete personalized routine using the selected products.";
   addChatMessage("user", userPrompt);
   addChatMessage("assistant", "Generating your routine...");
 
